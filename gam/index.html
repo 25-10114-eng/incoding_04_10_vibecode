@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>사과게임 (Apple Game)</title>
+    <!-- Modern font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header: Title, Score, Timer -->
+        <header class="game-header">
+            <h1 class="logo">사과<span class="game-color">게임</span></h1>
+            <div class="stats">
+                <div class="stat-box">
+                    <span class="stat-label">TIME</span>
+                    <span id="timerDisplay" class="stat-value">120</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">SCORE</span>
+                    <span id="scoreDisplay" class="stat-value">0</span>
+                </div>
+            </div>
+            <button id="restartBtn" class="btn-primary">
+                <img src="file:///C:/Users/com/.gemini/antigravity/brain/9f10b646-9e1a-4bca-a788-9f781e166c92/apple_character_1775798468044.png" class="btn-icon" alt="apple">
+                Restart
+            </button>
+        </header>
+
+        <!-- Main Game Board -->
+        <main class="board-wrapper">
+            <!-- Floating tooltip for current selection sum -->
+            <div id="selectionSum" class="floating-sum hidden">0</div>
+            <!-- The apples grid, generated from JS -->
+            <div id="gameBoard" class="game-board"></div>
+        </main>
+
+        <!-- Game Over Modal -->
+        <div id="gameOverModal" class="modal hidden">
+            <div class="modal-content glass">
+                <h2>Game Over!</h2>
+                <p>당신의 점수는 <strong id="finalScore" class="game-color">0</strong> 점 입니다.</p>
+                <button id="playAgainBtn" class="btn-primary btn-large">
+                    <img src="file:///C:/Users/com/.gemini/antigravity/brain/9f10b646-9e1a-4bca-a788-9f781e166c92/apple_character_1775798468044.png" class="btn-icon" alt="apple">
+                    다시 플레이하기
+                </button>
+            </div>
+        </div>
+
+        <!-- Teasing Apple Character -->
+        <div id="teasingCharacter" class="teasing-character">
+            <img src="file:///C:/Users/com/.gemini/antigravity/brain/9f10b646-9e1a-4bca-a788-9f781e166c92/apple_character_1775798468044.png" alt="Teasing Apple">
+            <div class="tease-bubble">메롱~ 너무 잘하잖아! 🤪</div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

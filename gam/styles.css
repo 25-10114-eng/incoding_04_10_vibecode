@@ -1,0 +1,335 @@
+/* Color Palette and Variables */
+:root {
+    --bg-color-main: #0B0E14;
+    --bg-color-board: #151A24;
+    --text-primary: #F3F4F6;
+    --text-secondary: #9CA3AF;
+    --accent-red: #F43F5E;
+    --accent-red-hover: #E11D48;
+    --selection-bg: rgba(244, 63, 94, 0.2);
+    --selection-border: rgba(244, 63, 94, 0.8);
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --apple-color: #FAFAFA;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color-main);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Prevent scrolling during drag */
+    user-select: none; /* Prevent text selection */
+    -webkit-user-select: none;
+}
+
+.game-container {
+    width: 95vw;
+    max-width: 1400px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header Styles */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.game-color {
+    color: var(--accent-red);
+}
+
+.stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    margin-top: -2px;
+}
+
+.btn-primary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: var(--accent-red);
+    color: white;
+    border: none;
+    padding: 16px 28px;
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 14px rgba(244, 63, 94, 0.4);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-red-hover);
+}
+
+.btn-primary:active {
+    transform: scale(0.95);
+}
+
+.btn-large {
+    padding: 20px 40px;
+    font-size: 28px;
+    border-radius: 16px;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.btn-large .btn-icon {
+    width: 44px;
+    height: 44px;
+}
+
+/* Board Styles */
+.board-wrapper {
+    position: relative;
+    background: var(--bg-color-board);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(17, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 4px;
+    width: 100%;
+    aspect-ratio: 17/10;
+}
+
+.apple {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    
+    /* Beautiful Apple SVG */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 85 C15 90, 5 45, 15 25 C20 10, 40 10, 50 20 C60 10, 80 10, 85 25 C95 45, 85 90, 50 85 Z" fill="%23F43F5E" stroke="%239F1239" stroke-width="3"/><path d="M50 20 C50 5, 65 0, 80 0 C75 15, 60 20, 50 20 Z" fill="%2310B981" stroke="%23047857" stroke-width="2"/></svg>');
+    background-size: 85% 85%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    color: #FFFFFF;
+    font-size: clamp(20px, 3.5vw, 42px);
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.8);
+    transition: transform 0.1s, opacity 0.3s, background-color 0.2s, filter 0.2s;
+}
+
+/* Remove previous dynamic gradient text colors because background is now red */
+/* We will just let them all be white and heavily shadowed for readability against the red apple */
+
+.apple.selected {
+    transform: scale(0.9);
+    filter: brightness(1.3) drop-shadow(0 0 10px rgba(244, 63, 94, 0.8));
+}
+
+.apple.empty {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0);
+}
+
+/* Popping animation */
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); opacity: 1; background-color: var(--accent-red); color: white;}
+    100% { transform: scale(0); opacity: 0; }
+}
+
+.apple.popping {
+    animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Appear animation for new apples */
+@keyframes appear {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.apple.appearing {
+    animation: appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Floating Sum Tooltip */
+.floating-sum {
+    position: absolute;
+    background: var(--accent-red);
+    color: white;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 16px;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.2s, background 0.2s;
+    box-shadow: 0 4px 15px rgba(244,63,94,0.5);
+    pointer-events: none;
+    z-index: 20;
+    transform: translate(-50%, -150%);
+}
+
+.floating-sum.hidden {
+    opacity: 0;
+}
+
+.floating-sum.valid {
+    background: #10B981;
+    box-shadow: 0 4px 15px rgba(16,185,129,0.5);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content.glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    padding: 40px 60px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal.hidden .modal-content {
+    transform: translateY(20px);
+}
+
+.modal h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.modal p {
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+/* Teasing Character (Huge Full Screen) */
+.teasing-character {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 2000; /* above everything */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+}
+
+.teasing-character.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.teasing-character img {
+    width: 70vw;
+    max-width: 600px;
+    height: auto;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.8));
+    animation: bounceHuge 1s infinite alternate;
+}
+
+.tease-bubble {
+    background: white;
+    color: #111;
+    padding: 20px 40px;
+    border-radius: 40px;
+    font-weight: 800;
+    font-size: clamp(30px, 5vw, 60px);
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+@keyframes bounceHuge {
+    0% { transform: translateY(0) rotate(0deg) scale(1); }
+    100% { transform: translateY(-30px) rotate(5deg) scale(1.05); }
+}
